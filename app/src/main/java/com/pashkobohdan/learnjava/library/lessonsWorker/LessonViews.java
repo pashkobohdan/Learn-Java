@@ -40,12 +40,12 @@ public class LessonViews {
         String[] parts = currentTheme.getText().split("/>");
 
 
-        Toast.makeText(context, "text : "+currentTheme.getText(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "text : " + currentTheme.getText(), Toast.LENGTH_SHORT).show();
 
         LessonHolders lessonHolders = new LessonHolders();
         for (String lessonPart : parts) {
             if (lessonPart.indexOf("<text ") == 0) {
-                lessonPart = lessonPart.replaceFirst("<text ","");
+                lessonPart = lessonPart.replaceFirst("<text ", "");
 
                 LessonHolders.LessonTextHolder textHolder = lessonHolders.getLessonText(context);
                 textHolder.lessonText.setText(lessonPart);
@@ -53,16 +53,25 @@ public class LessonViews {
                 views.add(textHolder.getView());
             }
             if (lessonPart.indexOf("<pic ") == 0) {
-                lessonPart = lessonPart.replaceFirst("<pic ","");
+                lessonPart = lessonPart.replaceFirst("<pic ", "");
 
-                String[] textAndImage = lessonPart.split(" ");
-
+                int pos = lessonPart.indexOf(" ");
+                String picName = lessonPart.substring(0, pos);
+                String picTitle = pos<lessonPart.length()-1?lessonPart.substring(pos + 1):"";
 
                 LessonHolders.LessonImageHolder imageHolder = lessonHolders.getLessonImage(context);
                 imageHolder.lessonImage.setImageDrawable(context.getResources().getDrawable(R.drawable.three_principles));
-                imageHolder.lessonImageTitle.setText(textAndImage[1]);
+                imageHolder.lessonImageTitle.setText(picTitle);
 
                 views.add(imageHolder.getView());
+            }
+            if (lessonPart.indexOf("<code ") == 0) {
+                lessonPart = lessonPart.replaceFirst("<code ", "");
+
+                LessonHolders.LessonCodeHolder textHolder = lessonHolders.getLessonCode(context);
+                textHolder.lessonCode.setText(lessonPart);
+
+                views.add(textHolder.getView());
             }
         }
     }

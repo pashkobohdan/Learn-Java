@@ -40,16 +40,18 @@ public class ReadData {
                             DatabaseHelper.TEST_THEME},
                     null, null,
                     null, null, null);
-            int testId;
-            String testName, testTheme;
+            int testId, oneAnswer;
+            String testName, testTheme, testAnswers;
             Test test;
 
             while (cursorEvents.moveToNext()) {
                 testId = cursorEvents.getInt(cursorEvents.getColumnIndex(DatabaseHelper.TEST_ID));
                 testName = cursorEvents.getString(cursorEvents.getColumnIndex(DatabaseHelper.TEST_TEXT));
                 testTheme = cursorEvents.getString(cursorEvents.getColumnIndex(DatabaseHelper.TEST_THEME));
+                testAnswers = cursorEvents.getString(cursorEvents.getColumnIndex(DatabaseHelper.TEST_THEME));
+                oneAnswer = cursorEvents.getInt(cursorEvents.getColumnIndex(DatabaseHelper.TEST_THEME));
 
-                test = new Test(testTheme, testName);
+                test = new Test(testTheme, testName, testAnswers, oneAnswer);
 
                 resultList.add(test);
 
@@ -140,11 +142,11 @@ public class ReadData {
     }
 
 
-    public static List<Theme> getThemesByPart(String partName){
+    public static List<Theme> getThemesByPart(String partName) {
         List<Theme> result = new LinkedList<>();
 
-        for(Theme theme : getThemesList()){
-            if(theme.getPart().equals(partName)){
+        for (Theme theme : getThemesList()) {
+            if (theme.getPart().equals(partName)) {
                 result.add(theme);
             }
         }
@@ -153,10 +155,10 @@ public class ReadData {
     }
 
 
-    public static void dropAllTables(){
-        mSqLiteDatabase.execSQL("delete from "+ DatabaseHelper.PARTS_DATABASE_TABLE);
-        mSqLiteDatabase.execSQL("delete from "+ DatabaseHelper.THEME_DATABASE_TABLE);
-        mSqLiteDatabase.execSQL("delete from "+ DatabaseHelper.TEST_DATABASE_TABLE);
+    public static void dropAllTables() {
+        mSqLiteDatabase.execSQL("delete from " + DatabaseHelper.PARTS_DATABASE_TABLE);
+        mSqLiteDatabase.execSQL("delete from " + DatabaseHelper.THEME_DATABASE_TABLE);
+        mSqLiteDatabase.execSQL("delete from " + DatabaseHelper.TEST_DATABASE_TABLE);
     }
 //    //delete
 //    public static boolean deleteSubject(Subject subject) {
@@ -245,7 +247,6 @@ public class ReadData {
         values.put(DatabaseHelper.THEME_PIC, theme.getPic());
         values.put(DatabaseHelper.THEME_TEXT, theme.getText());
 
-
         return mSqLiteDatabase.insert(DatabaseHelper.THEME_DATABASE_TABLE, null, values) == -1 ? false : true;
     }
 
@@ -255,6 +256,8 @@ public class ReadData {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.TEST_TEXT, test.getText());
         values.put(DatabaseHelper.TEST_THEME, test.getTheme());
+        values.put(DatabaseHelper.TEST_ANSWERS, test.getAnswers());
+        values.put(DatabaseHelper.TEST_ONE_ANSWER, test.isOneAnswer());
 
         mSqLiteDatabase.insert(DatabaseHelper.TEST_DATABASE_TABLE, null, values);
         return true;

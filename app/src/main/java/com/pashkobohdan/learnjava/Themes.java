@@ -26,12 +26,21 @@ public class Themes extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_themes);
 
-        ReadData.refreshThemes();
-
-
         Bundle extras = getIntent().getExtras();
         String themeName= extras.getString("part_number");
         String themeImage= extras.getString("part_image");
+
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        ActionBar actionbar = getSupportActionBar();
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(themeName);
+
+        ReadData.refreshThemes();
+
 
 
         ImageView bacImageView = (ImageView)findViewById(R.id.background_image);
@@ -51,13 +60,6 @@ public class Themes extends AppCompatActivity {
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) {
-            actionbar.setDisplayHomeAsUpEnabled(true);
-        }
 
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(getString(R.string.app_name));
     }
 }

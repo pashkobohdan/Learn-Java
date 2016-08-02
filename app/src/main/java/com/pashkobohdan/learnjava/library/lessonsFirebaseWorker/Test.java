@@ -6,13 +6,17 @@ package com.pashkobohdan.learnjava.library.lessonsFirebaseWorker;
 public class Test {
     private String text;
     private String theme;
+    private String answers;
+    private int oneAnswer;
 
     public Test() {
     }
 
-    public Test(String theme, String text) {
-        this.theme = theme;
+    public Test(String text, String theme, String answers, int oneAnswer) {
         this.text = text;
+        this.theme = theme;
+        this.answers = answers;
+        this.oneAnswer = oneAnswer;
     }
 
     public String getText() {
@@ -29,5 +33,21 @@ public class Test {
 
     public void setTheme(String theme) {
         this.theme = theme;
+    }
+
+    public String getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(String answers) {
+        this.answers = answers;
+    }
+
+    public int isOneAnswer() {
+        return oneAnswer;
+    }
+
+    public void setOneAnswer(int oneAnswer) {
+        this.oneAnswer = oneAnswer;
     }
 }

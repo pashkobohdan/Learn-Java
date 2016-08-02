@@ -64,4 +64,26 @@ public class LessonHolders {
         return new LessonImageHolder(v);
     }
 
+    class LessonCodeHolder extends RecyclerView.ViewHolder {
+        protected TextView lessonCode;
+        private View view;
+
+        public LessonCodeHolder(View itemView) {
+            super(itemView);
+
+            this.view = itemView;
+
+            lessonCode = (TextView) itemView.findViewById(R.id.lesson_code);
+        }
+
+        public View getView() {
+            return view;
+        }
+    }
+
+    public LessonCodeHolder getLessonCode(Context context) {
+        View v = LayoutInflater.from(context).inflate(R.layout.lesson_code, null, false);
+        return new LessonCodeHolder(v);
+    }
+
 }
