@@ -58,7 +58,9 @@ public class DownloadData extends AppCompatActivity {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Test test = child.getValue(Test.class);
 
-                        ReadData.addTest(test);
+                        if(!ReadData.addTest(test)){
+                            Toast.makeText(ReadData.getContext(), "Error !", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     downloadThemes();

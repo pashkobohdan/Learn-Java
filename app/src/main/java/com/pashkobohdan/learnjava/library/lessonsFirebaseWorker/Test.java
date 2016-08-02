@@ -8,15 +8,17 @@ public class Test {
     private String theme;
     private String answers;
     private int oneAnswer;
+    private int answer;
 
     public Test() {
     }
 
-    public Test(String text, String theme, String answers, int oneAnswer) {
-        this.text = text;
-        this.theme = theme;
-        this.answers = answers;
-        this.oneAnswer = oneAnswer;
+    public Test(String text, String theme, String answers, int oneAnswer, int answer) {
+        this.setText(text);
+        this.setTheme(theme);
+        this.setAnswers(answers);
+        this.setOneAnswer(oneAnswer);
+        this.setAnswer(answer);
     }
 
     public String getText() {
@@ -43,11 +45,19 @@ public class Test {
         this.answers = answers;
     }
 
-    public int isOneAnswer() {
+    public int getOneAnswer() {
         return oneAnswer;
     }
 
     public void setOneAnswer(int oneAnswer) {
         this.oneAnswer = oneAnswer;
+    }
+
+    public int getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(int answer) {
+        this.answer = answer;
     }
 }

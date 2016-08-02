@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Part;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Test;
@@ -37,21 +38,25 @@ public class ReadData {
             Cursor cursorEvents = mSqLiteDatabase.query(DatabaseHelper.TEST_DATABASE_TABLE, new String[]{
                             DatabaseHelper.TEST_ID,
                             DatabaseHelper.TEST_TEXT,
-                            DatabaseHelper.TEST_THEME},
+                            DatabaseHelper.TEST_THEME,
+                            DatabaseHelper.TEST_ANSWERS,
+                            DatabaseHelper.TEST_ONE_ANSWER,
+                            DatabaseHelper.TEST_ANSWER},
                     null, null,
                     null, null, null);
-            int testId, oneAnswer;
-            String testName, testTheme, testAnswers;
+            int testId, oneAnswer, answer;
+            String testText, testTheme, testAnswers;
             Test test;
 
             while (cursorEvents.moveToNext()) {
                 testId = cursorEvents.getInt(cursorEvents.getColumnIndex(DatabaseHelper.TEST_ID));
-                testName = cursorEvents.getString(cursorEvents.getColumnIndex(DatabaseHelper.TEST_TEXT));
+                testText = cursorEvents.getString(cursorEvents.getColumnIndex(DatabaseHelper.TEST_TEXT));
                 testTheme = cursorEvents.getString(cursorEvents.getColumnIndex(DatabaseHelper.TEST_THEME));
-                testAnswers = cursorEvents.getString(cursorEvents.getColumnIndex(DatabaseHelper.TEST_THEME));
-                oneAnswer = cursorEvents.getInt(cursorEvents.getColumnIndex(DatabaseHelper.TEST_THEME));
+                testAnswers = cursorEvents.getString(cursorEvents.getColumnIndex(DatabaseHelper.TEST_ANSWERS));
+                oneAnswer = cursorEvents.getInt(cursorEvents.getColumnIndex(DatabaseHelper.TEST_ONE_ANSWER));
+                answer = cursorEvents.getInt(cursorEvents.getColumnIndex(DatabaseHelper.TEST_ANSWER));
 
-                test = new Test(testTheme, testName, testAnswers, oneAnswer);
+                test = new Test(testText,testTheme,testAnswers,oneAnswer,answer);
 
                 resultList.add(test);
 
@@ -61,6 +66,8 @@ public class ReadData {
             testsList = resultList;
             return true;
         } catch (Exception e) {
+            Toast.makeText(context, e.toString()+"", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
             return false;
         }
     }
@@ -148,6 +155,18 @@ public class ReadData {
         for (Theme theme : getThemesList()) {
             if (theme.getPart().equals(partName)) {
                 result.add(theme);
+            }
+        }
+
+        return result;
+    }
+
+    public static List<Test> getTestByTheme (String themeName) {
+        List<Test> result = new LinkedList<>();
+
+        for (Test test : getTestsList()) {
+            if (test.getTheme().equals(themeName)) {
+                result.add(test);
             }
         }
 
@@ -255,12 +274,12 @@ public class ReadData {
 
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.TEST_TEXT, test.getText());
-        values.put(DatabaseHelper.TEST_THEME, test.getTheme());
         values.put(DatabaseHelper.TEST_ANSWERS, test.getAnswers());
-        values.put(DatabaseHelper.TEST_ONE_ANSWER, test.isOneAnswer());
+        values.put(DatabaseHelper.TEST_ONE_ANSWER, test.getOneAnswer());
+        values.put(DatabaseHelper.TEST_ANSWER, test.getAnswer());
+        values.put(DatabaseHelper.TEST_THEME, test.getTheme());
 
-        mSqLiteDatabase.insert(DatabaseHelper.TEST_DATABASE_TABLE, null, values);
-        return true;
+        return mSqLiteDatabase.insert(DatabaseHelper.TEST_DATABASE_TABLE, null, values)== -1 ? false : true;
     }
     //
 
@@ -274,6 +293,10 @@ public class ReadData {
         } else {
             return false;
         }
+    }
+
+    public static Context getContext(){
+        return context;
     }
 
     public static boolean isDBEmpty() {

@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TEST_ANSWERS = "test_answers";
     public static final String TEST_ONE_ANSWER = "test_one_answer";
     public static final String TEST_THEME = "test_theme";
+    public static final String TEST_ANSWER = "test_answer";
 
     public static final String DATABASE_CREATE_TEST_SCRIPT = "create table "
             + TEST_DATABASE_TABLE + " ("
@@ -31,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TEST_TEXT + " text not null, "
             + TEST_ANSWERS + " text not null, "
             + TEST_ONE_ANSWER + " integer not null, "
+            + TEST_ANSWER + " integer not null, "
             + TEST_THEME + " text not null);";
 
 

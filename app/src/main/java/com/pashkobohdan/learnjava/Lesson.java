@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class Lesson extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         lessonText = LessonText.newInstance(themeName);
-        lessonTests = new LessonTests();
+        lessonTests = LessonTests.newInstance(themeName);
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(lessonText, "Lesson");
@@ -85,5 +86,16 @@ public class Lesson extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id==android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
