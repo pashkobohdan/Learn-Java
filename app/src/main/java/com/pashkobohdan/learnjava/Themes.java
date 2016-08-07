@@ -20,7 +20,7 @@ public class Themes extends AppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager mLayoutManager;
-    ThemesListAdapter themesListAdapter;
+    String partName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +28,8 @@ public class Themes extends AppCompatActivity {
         setContentView(R.layout.activity_themes);
 
         Bundle extras = getIntent().getExtras();
-        String themeName= extras.getString("part_number");
-        String themeImage= extras.getString("part_image");
+        partName = extras.getString("part_number");
+        String partImage = extras.getString("part_image");
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         ActionBar actionbar = getSupportActionBar();
@@ -38,29 +38,32 @@ public class Themes extends AppCompatActivity {
         }
 
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(themeName);
+        collapsingToolbar.setTitle(partName);
 
-        ReadData.refreshThemes();
-
-
-
-        ImageView bacImageView = (ImageView)findViewById(R.id.background_image);
-        ThemesListAdapter.setImageToImageView(bacImageView, new File(getBaseContext().getFilesDir(), themeImage));
+        ImageView bacImageView = (ImageView) findViewById(R.id.background_image);
+        ThemesListAdapter.setImageToImageView(bacImageView, new File(getBaseContext().getFilesDir(), partImage));
 
 
-        if (themeName != null) {
+        recyclerView = (RecyclerView) findViewById(R.id.themes_list_view);
 
-            recyclerView = (RecyclerView) findViewById(R.id.themes_list_view);
+        mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(mLayoutManager);
 
-            mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(mLayoutManager);
+        ThemesListAdapter themesListAdapter = new ThemesListAdapter(Themes.this, ReadData.getThemesByPart(partName), recyclerView);
+        recyclerView.setAdapter(themesListAdapter);
 
-            themesListAdapter = new ThemesListAdapter(Themes.this, ReadData.getThemesByPart(themeName),recyclerView);
-            recyclerView.setAdapter(themesListAdapter);
-        }
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        recyclerView.setAdapter(null);
+
+        ThemesListAdapter themesListAdapter = new ThemesListAdapter(Themes.this, ReadData.getThemesByPart(partName), recyclerView);
+        recyclerView.setAdapter(themesListAdapter);
 
     }
 
@@ -68,7 +71,7 @@ public class Themes extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id==android.R.id.home) {
+        if (id == android.R.id.home) {
             finish();
         }
 

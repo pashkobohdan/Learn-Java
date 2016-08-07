@@ -173,6 +173,23 @@ public class ReadData {
         return result;
     }
 
+    public static Theme getThemeByName(String themeName){
+        for(Theme theme : getThemesList()){
+            if(theme.getName().equals(themeName)){
+                return theme;
+            }
+        }
+        return null;
+    }
+
+    public static Part getPartByName(String partName){
+        for(Part part : getPartsList()){
+            if(part.getName().equals(partName)){
+                return part;
+            }
+        }
+        return null;
+    }
 
     public static void dropAllTables() {
         mSqLiteDatabase.execSQL("delete from " + DatabaseHelper.PARTS_DATABASE_TABLE);

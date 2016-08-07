@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.pashkobohdan.learnjava.library.adapters.PartsListAdapter;
 import com.pashkobohdan.learnjava.library.dateBaseHelper.ReadData;
+import com.pashkobohdan.learnjava.library.lessonsWorker.PreferencesWorker;
 
 public class Parts extends AppCompatActivity {
     private Toolbar toolbar;
@@ -29,8 +30,13 @@ public class Parts extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
+        PreferencesWorker.setContext(getBaseContext());
+
         ReadData.setContext(getBaseContext());
         ReadData.refreshParts();
+        ReadData.refreshThemes();
+        ReadData.refreshTests();
+
 
         if (ReadData.getPartsList().size() == 0) {
             Intent intent = new Intent(Parts.this, DownloadData.class);
@@ -46,12 +52,14 @@ public class Parts extends AppCompatActivity {
         partListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(Parts.this, "number : " + i, Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(Parts.this, Themes.class);
-                intent.putExtra("part_number", ReadData.getPartsList().get(i).getName());
-                intent.putExtra("part_image", ReadData.getPartsList().get(i).getPic());
-                startActivity(intent);
+                if (PreferencesWorker.isPartOpen(ReadData.getPartsList().get(i))) {
+                    Intent intent = new Intent(Parts.this, Themes.class);
+                    intent.putExtra("part_number", ReadData.getPartsList().get(i).getName());
+                    intent.putExtra("part_image", ReadData.getPartsList().get(i).getPic());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(Parts.this, "part " + ReadData.getPartsList().get(i).getName() + " is closed", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

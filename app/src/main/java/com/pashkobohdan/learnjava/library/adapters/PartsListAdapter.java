@@ -11,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pashkobohdan.learnjava.R;
+import com.pashkobohdan.learnjava.library.dateBaseHelper.ReadData;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Part;
+import com.pashkobohdan.learnjava.library.lessonsWorker.PreferencesWorker;
 
 import java.io.File;
 import java.util.List;
@@ -33,6 +35,7 @@ public class PartsListAdapter extends ArrayAdapter<Part> {
     static class ViewSubjectHolder {
         protected TextView partName;
         protected ImageView partImage;
+        protected TextView themeNumber;
     }
 
 
@@ -62,10 +65,14 @@ public class PartsListAdapter extends ArrayAdapter<Part> {
             final ViewSubjectHolder viewHolder = new ViewSubjectHolder();
             viewHolder.partName = (TextView) view.findViewById(R.id.part_name);
             viewHolder.partImage = (ImageView) view.findViewById(R.id.part_image);
+            viewHolder.themeNumber = (TextView) view.findViewById(R.id.current_theme_number);
 
             view.setTag(viewHolder);
 
             viewHolder.partName.setText(parts.get(position).getName());
+            viewHolder.themeNumber.setText(PreferencesWorker.getOpenThemeCount(parts.get(position))
+                    + " / "
+                    + ReadData.getThemesByPart(parts.get(position).getName()).size());
             setImageToImageView(viewHolder.partImage, new File(context.getFilesDir(), parts.get(position).getPic()));
 
         } else {
@@ -73,14 +80,17 @@ public class PartsListAdapter extends ArrayAdapter<Part> {
 
             final ViewSubjectHolder holder = (ViewSubjectHolder) view.getTag();
             holder.partName.setText(parts.get(position).getName());
+            holder.themeNumber.setText(PreferencesWorker.getOpenThemeCount(parts.get(position))
+                    + " / "
+                    + ReadData.getThemesByPart(parts.get(position).getName()).size());
             setImageToImageView(holder.partImage, new File(context.getFilesDir(), parts.get(position).getPic()));
         }
 
         return view;
     }
 
-    public static boolean setImageToImageView(ImageView imageView, File fileWithImage){
-        if(fileWithImage.exists()){
+    public static boolean setImageToImageView(ImageView imageView, File fileWithImage) {
+        if (fileWithImage.exists()) {
             Bitmap myBitmap = BitmapFactory.decodeFile(fileWithImage.getAbsolutePath());
             imageView.setImageBitmap(myBitmap);
 

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
-
-    <ImageView
-        android:id="@+id/part_image"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginTop="2dp"
+    card_view:cardCornerRadius="4dp">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:foregroundGravity="center" />
+        android:layout_height="wrap_content">
+
 
     <TextView
         android:id="@+id/part_name"
@@ -17,8 +19,55 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/part_image"
-        android:layout_marginTop="10dp"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-</RelativeLayout>
+
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/part_name">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".50">
+
+                <TextView
+                    android:id="@+id/theme_word"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Theme №" />
+
+                <TextView
+                    android:id="@+id/current_theme_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/theme_word"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="1/3" />
+            </RelativeLayout>
+
+
+            <ImageView
+                android:id="@+id/part_image"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight=".50"
+                android:foregroundGravity="center"
+                android:src="@drawable/three_principles" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

@@ -22,6 +22,7 @@ import com.pashkobohdan.learnjava.library.dateBaseHelper.ReadData;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Part;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Test;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Theme;
+import com.pashkobohdan.learnjava.library.lessonsWorker.PreferencesWorker;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -58,7 +59,7 @@ public class DownloadData extends AppCompatActivity {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Test test = child.getValue(Test.class);
 
-                        if(!ReadData.addTest(test)){
+                        if (!ReadData.addTest(test)) {
                             Toast.makeText(ReadData.getContext(), "Error !", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -126,6 +127,8 @@ public class DownloadData extends AppCompatActivity {
                         ReadData.addPart(part);
                     }
 
+                    PreferencesWorker.openPart(ReadData.getPartsList().get(0));
+                    PreferencesWorker.openTheme(ReadData.getThemesByPart(ReadData.getPartsList().get(0).getName()).get(0));
                     downloadPartsPictures();
                 }
 
