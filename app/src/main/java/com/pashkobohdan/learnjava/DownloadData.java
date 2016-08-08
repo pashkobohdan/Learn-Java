@@ -22,9 +22,12 @@ import com.pashkobohdan.learnjava.library.dateBaseHelper.ReadData;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Part;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Test;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Theme;
+import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.ThemeImage;
 import com.pashkobohdan.learnjava.library.lessonsWorker.PreferencesWorker;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DownloadData extends AppCompatActivity {
@@ -49,7 +52,7 @@ public class DownloadData extends AppCompatActivity {
     private void downloadAll() {
         try {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("tests");
+            final DatabaseReference myRef = database.getReference("tests");
 
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -64,6 +67,7 @@ public class DownloadData extends AppCompatActivity {
                         }
                     }
 
+                    myRef.removeEventListener(this);
                     downloadThemes();
                 }
 
@@ -82,7 +86,7 @@ public class DownloadData extends AppCompatActivity {
     private void downloadThemes() {
         try {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("Themes");
+            final DatabaseReference myRef = database.getReference("Themes");
 
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -95,6 +99,7 @@ public class DownloadData extends AppCompatActivity {
                         ReadData.addTheme(theme);
                     }
 
+                    myRef.removeEventListener(this);
                     downloadParts();
                 }
 
@@ -113,7 +118,7 @@ public class DownloadData extends AppCompatActivity {
     private void downloadParts() {
         try {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("Parts");
+            final DatabaseReference myRef = database.getReference("Parts");
 
 
             myRef.addValueEventListener(new ValueEventListener() {
@@ -127,9 +132,10 @@ public class DownloadData extends AppCompatActivity {
                         ReadData.addPart(part);
                     }
 
+                    myRef.removeEventListener(this);
                     PreferencesWorker.openPart(ReadData.getPartsList().get(0));
                     PreferencesWorker.openTheme(ReadData.getThemesByPart(ReadData.getPartsList().get(0).getName()).get(0));
-                    downloadPartsPictures();
+                    downloadThemeImages();
                 }
 
                 @Override
@@ -144,6 +150,85 @@ public class DownloadData extends AppCompatActivity {
         }
     }
 
+    private List<ThemeImage> themeImages = new LinkedList<>();
+    private void downloadThemeImages() {
+        try {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            final DatabaseReference myRef = database.getReference("ThemesImages");
+
+
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    status.setText("Downloading themes images");
+
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        ThemeImage themeImage = child.getValue(ThemeImage.class);
+
+                        themeImages.add(themeImage);
+                    }
+
+                    myRef.removeEventListener(this);
+                    downloadThemesImages();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    progress.setVisibility(ProgressBar.INVISIBLE);
+
+                    showBDError();
+                }
+            });
+        } catch (Exception e) {
+            showBDError();
+        }
+    }
+
+    private void downloadThemesImages() {
+        totalThemesImages = new AtomicInteger(themeImages.size());
+
+        status.setText("Downloading themes images : ");
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://learn-java-d3304.appspot.com");
+        StorageReference partsPicRef = storageRef.child("themesImages");
+
+        for (final ThemeImage themeImage : themeImages) {
+            partsPicRef.child(themeImage.getName()).getFile(new File(getBaseContext().getFilesDir(), themeImage.getName())).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    totalThemesImages.decrementAndGet();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(DownloadData.this, "error : " + themeImage.getName() + "\n" + exception.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (totalThemesImages.get() > 0) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        downloadPartsPictures();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private AtomicInteger totalThemesImages;
     private AtomicInteger totalPartsPic;
     private AtomicInteger totalThemesPic;
 

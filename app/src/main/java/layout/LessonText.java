@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -48,8 +49,6 @@ public class LessonText extends Fragment {
                 break;
             }
         }
-
-
     }
 
     @Override
@@ -61,18 +60,26 @@ public class LessonText extends Fragment {
         LessonViews lessonViews = new LessonViews(currentTheme, getContext());
 
         LinearLayout.LayoutParams params;
+        params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(dpToPx(3), dpToPx(10),dpToPx(3),dpToPx(2));
+
         for (View view : lessonViews.getViews()) {
-
-            params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            float d = getContext().getResources().getDisplayMetrics().density;
-            params.setMargins((int) (5 * d), (int) (3 * d), (int) (5 * d), 0);
             view.setLayoutParams(params);
 
             linearLayout.addView(view);
         }
 
         return rootView;
+    }
+
+    public static int dpToPx(int dp)
+    {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    public static int pxToDp(int px)
+    {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
 
     @Override

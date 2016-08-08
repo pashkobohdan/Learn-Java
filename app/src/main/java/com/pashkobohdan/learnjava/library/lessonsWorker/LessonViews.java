@@ -13,8 +13,10 @@ import android.widget.Toast;
 
 import com.pashkobohdan.learnjava.Lesson;
 import com.pashkobohdan.learnjava.R;
+import com.pashkobohdan.learnjava.library.adapters.ThemesListAdapter;
 import com.pashkobohdan.learnjava.library.lessonsFirebaseWorker.Theme;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,37 +41,35 @@ public class LessonViews {
 
         String[] parts = currentTheme.getText().split("/>");
 
-
-        Toast.makeText(context, "text : " + currentTheme.getText(), Toast.LENGTH_SHORT).show();
-
         LessonHolders lessonHolders = new LessonHolders();
         for (String lessonPart : parts) {
-            if (lessonPart.indexOf("<text ") == 0) {
-                lessonPart = lessonPart.replaceFirst("<text ", "");
+            String part = lessonPart.substring(lessonPart.indexOf("<")).replaceAll("\\\\n", "\n");
+
+            if (part.indexOf("<text ") == 0) {
+                part = part.replaceFirst("<text ", "");
 
                 LessonHolders.LessonTextHolder textHolder = lessonHolders.getLessonText(context);
-                textHolder.lessonText.setText(lessonPart);
+                textHolder.lessonText.setText(part);
 
                 views.add(textHolder.getView());
-            }
-            if (lessonPart.indexOf("<pic ") == 0) {
-                lessonPart = lessonPart.replaceFirst("<pic ", "");
+            } else if (part.indexOf("<pic ") == 0) {
+                part = part.replaceFirst("<pic ", "");
 
-                int pos = lessonPart.indexOf(" ");
-                String picName = lessonPart.substring(0, pos);
-                String picTitle = pos<lessonPart.length()-1?lessonPart.substring(pos + 1):"";
+                int pos = part.indexOf(" ");
+                String picName = part.substring(0, pos);
+                String picTitle = pos < part.length() - 1 ? part.substring(pos + 1) : "";
 
                 LessonHolders.LessonImageHolder imageHolder = lessonHolders.getLessonImage(context);
-                imageHolder.lessonImage.setImageDrawable(context.getResources().getDrawable(R.drawable.three_principles));
+
+                ThemesListAdapter.setImageToImageView(imageHolder.lessonImage, new File(context.getFilesDir(), picName));
                 imageHolder.lessonImageTitle.setText(picTitle);
 
                 views.add(imageHolder.getView());
-            }
-            if (lessonPart.indexOf("<code ") == 0) {
-                lessonPart = lessonPart.replaceFirst("<code ", "");
+            } else if (part.indexOf("<code ") == 0) {
+                part = part.replaceFirst("<code ", "");
 
                 LessonHolders.LessonCodeHolder textHolder = lessonHolders.getLessonCode(context);
-                textHolder.lessonCode.setText(lessonPart);
+                textHolder.lessonCode.setText(part);
 
                 views.add(textHolder.getView());
             }

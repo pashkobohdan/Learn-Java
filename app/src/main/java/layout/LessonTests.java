@@ -76,7 +76,7 @@ public class LessonTests extends Fragment {
 
         testParsers = new ArrayList<>();
 
-        currentTestNumber = PreferencesWorker.getSuccessTestsCount(currentTheme) % tests.size();
+        currentTestNumber = PreferencesWorker.getSuccessTestsCount(currentTheme);
         for (Test test : tests) {
             testParsers.add(TestParser.newInstance(test));
         }
@@ -104,9 +104,9 @@ public class LessonTests extends Fragment {
     }
 
     private void showNextTest() {
-        nowTest = testParsers.get(currentTestNumber);
+        nowTest = testParsers.get(currentTestNumber% testParsers.size());
 
-        testNumber.setText("Test # " + (currentTestNumber + 1) + "/" + tests.size());
+        testNumber.setText("Test # " + (currentTestNumber% testParsers.size() + 1) + "/" + tests.size());
         testType.setText(nowTest.getTestType());
         testText.setText(nowTest.getTestText());
 
@@ -153,8 +153,6 @@ public class LessonTests extends Fragment {
                                 PreferencesWorker.openTheme(ReadData.getThemesByPart(currentTheme.getPart()).get(themeNumber + 1));
                             }
                         }
-
-                        currentTestNumber = currentTestNumber % testParsers.size();
                         showNextTest();
                     } else {
                         Toast.makeText(getContext(), "False !", Toast.LENGTH_SHORT).show();

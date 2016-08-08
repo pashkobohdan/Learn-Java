@@ -1,8 +1,10 @@
 package com.pashkobohdan.learnjava.library.adapters;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +56,7 @@ public class PartsListAdapter extends ArrayAdapter<Part> {
         return position;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public View getView(final int position, final View convertView, ViewGroup parent) {
 
@@ -75,6 +78,11 @@ public class PartsListAdapter extends ArrayAdapter<Part> {
                     + ReadData.getThemesByPart(parts.get(position).getName()).size());
             setImageToImageView(viewHolder.partImage, new File(context.getFilesDir(), parts.get(position).getPic()));
 
+//            if(PreferencesWorker.isPartOpen(parts.get(position))){
+//                view.setForeground(context.getResources().getDrawable(R.drawable.card_foreground_selector));
+//            }else{
+//                view.setForeground(context.getResources().getDrawable(R.drawable.card_foreground_selector_no_active));
+//            }
         } else {
             view = convertView;
 
